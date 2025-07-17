@@ -1,7 +1,7 @@
 from sqlmodel import SQLModel, create_engine, Session
 from app.core.config_loader import settings
 
-from app.models import product
+from app.models import product, client, payment, sale, sale_detail
 
 DATABASE_URL = str(settings.SQLALCHEMY_DATABASE_URI)
 engine = create_engine(DATABASE_URL)
