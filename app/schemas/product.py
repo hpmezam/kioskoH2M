@@ -6,7 +6,7 @@ class ProductBase(SQLModel):
     price: float
     
 class ProductCreate(ProductBase):
-    pass  
+    category_id: int 
     
 class ProductUpdate(SQLModel):
     name: Optional[str] = None

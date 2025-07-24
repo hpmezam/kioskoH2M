@@ -10,6 +10,7 @@ class Client(SQLModel, table=True):
     name: str = Field(max_length=50, index=True)
     phone: Optional[str] = Field(default=None, max_length=10)
     current_balance: float = Field(default=0.0)
+    is_active: bool = Field(default=True)
     
     payments: List['Payment'] = Relationship(back_populates='client')
     sales: List['Sale'] = Relationship(back_populates='client')

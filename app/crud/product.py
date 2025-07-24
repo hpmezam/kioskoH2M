@@ -1,6 +1,7 @@
 from sqlmodel import Session, select
 from fastapi import HTTPException
 from app.models.product import Product
+from app.models.category import Category
 from app.schemas.product import ProductCreate, ProductUpdate, ProductRead
 
 def create_product(db: Session, product: ProductCreate) -> ProductRead:
@@ -8,9 +9,13 @@ def create_product(db: Session, product: ProductCreate) -> ProductRead:
     existing = db.exec(select(Product).where(Product.name == product.name)).first()
     if existing:
         raise HTTPException(status_code=400, detail=f"A product with name '{product.name}' already exists")
-    new_product = Product(**product.model_dump(), is_active=True)
+    
+    category = db.exec(select(Category).where(Category.id == product.category_id)).first()
+    if not category:
+        raise HTTPException(status_code=404, detail=f"Category with id {product.category_id} not found")
     
     # Create new product
+    new_product = Product(**product.model_dump(), is_active=True)
     db.add(new_product)
     
     db.commit()

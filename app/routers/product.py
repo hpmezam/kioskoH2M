@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, status
 from sqlmodel import Session
-from app.db.database import get_db
+from app.db.session import get_db
 from app.schemas.product import ProductCreate, ProductRead, ProductUpdate
 from app.crud.product import create_product, get_all_products, get_product, update_product, delete_product
 
