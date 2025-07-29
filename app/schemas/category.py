@@ -13,6 +13,7 @@ class CategoryUpdate(SQLModel):
     
 class CategoryRead(CategoryCreate):
     id: int
+    is_active: bool
 
 class ProductCreate(SQLModel):
     name: str

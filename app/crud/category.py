@@ -19,64 +19,76 @@ def create_category(db: Session, category: CategoryCreate) -> CategoryRead:
 def get_all_categories(db: Session) -> list[CategoryRead]:
     return  db.exec(select(Category)).all()
 
-# def get_product(db: Session, id: int) -> ProductRead:
-#     # 1. Get existing object
-#     product = db.get(Product, id)
-#     if not product:
-#         raise HTTPException(status_code=404, detail=f"Product with id {id} not found")
-#     return product
+def get_category(db: Session, id: int) -> CategoryRead:
+    # 1. Get existing object
+    category = db.get(Category, id)
+    if not category:
+        raise HTTPException(status_code=404, detail=f"Category with id {id} not found")
+    return category
 
-# def update_product(db: Session, id: int, product: ProductUpdate) -> ProductRead:
-#     # 1. Get existing object
-#     existing = db.get(Product, id)
-#     if not existing:
-#         raise HTTPException(status_code=404, detail=f"Product with id {id} not found")
+def update_category(db: Session, id: int, category: CategoryUpdate) -> CategoryRead:
+    # 1. Get existing object
+    existing = db.get(Category, id)
+    if not existing:
+        raise HTTPException(status_code=404, detail=f"Category with id {id} not found")
 
-#     # 2. Get only fields that were provided
-#     product_data = product.model_dump(exclude_unset=True)
+    # 2. Get only fields that were provided
+    category_data = category.model_dump(exclude_unset=True)
 
-#     # 3. Check if a different product already has the same name
-#     if "name" in product_data:
-#         duplicate = db.exec(
-#             select(Product)
-#             .where(Product.name == product_data["name"])
-#             .where(Product.id != id)
-#         ).first()
-#         if duplicate:
-#             raise HTTPException(
-#                 status_code=400,
-#                 detail=f"Another product with name '{product_data['name']}' already exists"
-#             )
+    # 3. Check if a different product already has the same name
+    if "name" in category_data:
+        duplicate = db.exec(
+            select(Category)
+            .where(Category.name == category_data["name"])
+            .where(Category.id != id)
+        ).first()
+        if duplicate:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Another category with name '{category_data['name']}' already exists"
+            )
 
-#     # 4. Check if the new values differ from the current ones
-#     no_changes = all(
-#         getattr(existing, field) == value
-#         for field, value in product_data.items()
-#     )
-#     if no_changes:
-#         raise HTTPException(
-#             status_code=400,
-#             detail="No changes detected"
-#         )
+    # 4. Check if the new values differ from the current ones
+    no_changes = all(
+        getattr(existing, field) == value
+        for field, value in category_data.items()
+    )
+    if no_changes:
+        raise HTTPException(
+            status_code=400,
+            detail="No changes detected"
+        )
 
-#     # 5. Apply updates
-#     for key, value in product_data.items():
-#         setattr(existing, key, value)
+    # 5. Apply updates
+    for key, value in category_data.items():
+        setattr(existing, key, value)
 
-#     db.add(existing)
-#     db.commit()
-#     db.refresh(existing)
-#     return existing
+    db.add(existing)
+    db.commit()
+    db.refresh(existing)
+    return existing
 
-# def delete_product(db: Session, id: int) -> dict:
-#     product = db.get(Product, id)
-#     if not product:
-#         raise HTTPException(
-#             status_code=404,
-#             detail=f"Product with id {id} not found"
-#         )
+def delete_category(db: Session, id: int) -> dict:
+    category = db.get(Category, id)
+    if not category:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Category with id {id} not found"
+        )
 
-#     name = product.name
-#     db.delete(product)
-#     db.commit()
-#     return {"message": f"The product '{name}' was successfully deleted"}
+    name = category.name
+    db.delete(category)
+    db.commit()
+    return {"message": f"The category '{name}' was successfully deleted"}
+
+def set_category_state(db: Session, id: int) -> CategoryRead:
+    category = db.get(Category, id)
+    if not category:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Category with id {id} not found"
+        )
+    category.is_active = not category.is_active
+    db.commit()
+    db.refresh(category)
+    return category

@@ -20,8 +20,7 @@ def get(id: int, db: Session = Depends(get_db)):
 
 @product_router.put('/{id}')
 def update(id: int, product: ProductUpdate, db: Session = Depends(get_db)):
-    db_product = update_product(db, id, product)
-    return db_product
+    return update_product(db, id, product)
 
 @product_router.delete("/{id}", status_code=200)
 def delete(id: int, db: Session = Depends(get_db)):
